@@ -1,0 +1,6 @@
+{
+  "name": "Proxmox Stealth Generator",
+  "description": "Factory level stealth generator for generating spoofed hardware profiles, Proxmox configure files, and bash install scripts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
