@@ -15,6 +15,7 @@ export interface PcModel {
   s: string;
   bp: string;
   t: string;
+  compatibleCpus: string[];
 }
 
 export interface PcBrand {
@@ -56,4 +57,5 @@ export interface HardwareIdentity {
   dSerial: string;
   hvVendor: string;
   vmGenId: string;
+  cpuType: string;
 }
