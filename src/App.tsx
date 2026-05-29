@@ -107,7 +107,7 @@ export default function App() {
       dSerial: diskInfo.serialGen(),
       hvVendor: getAlNum(12),
       vmGenId: `${getHex(8)}-${getHex(4)}-4${getHex(3)}-${['8', '9', 'A', 'B'][Math.floor(Math.random() * 4)]}${getHex(3)}-${getHex(12)}`,
-      cpuType: model.compatibleCpus[Math.floor(Math.random() * model.compatibleCpus.length)]
+      spoofedCpu: model.compatibleCpus[Math.floor(Math.random() * model.compatibleCpus.length)]
     };
 
     setIdentity(newIdentity);
@@ -147,7 +147,8 @@ export default function App() {
       diskGlobalArg = `-global ide-hd.model="${identity.dVendor} ${identity.dModel}"`;
     }
 
-    return `-smbios type=0,vendor="${identity.biosVendor}",version="${identity.ver}",date="${identity.biosDate}" ` +
+    return `-cpu '${identity.spoofedCpu.base},hidden=1,flags=+aes,-hypervisor,kvm=off,hv_vendor_id=GenuineIntel,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time,model_id=${identity.spoofedCpu.name}' ` +
+      `-smbios type=0,vendor="${identity.biosVendor}",version="${identity.ver}",date="${identity.biosDate}" ` +
       `-smbios type=1,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",sku="${identity.sku}",family="${identity.fam}" ` +
       `-smbios type=2,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",asset="${identity.sku}" ` +
       diskGlobalArg;
@@ -182,7 +183,6 @@ balloon: 2048
 bios: ovmf
 boot: order=${inputs.bootOrder}
 cores: 4
-cpu: ${identity.cpuType},hidden=1,flags=+aes
 efidisk0: local-lvm:vm-${inputs.vmId}-disk-1,efitype=4m,pre-enrolled-keys=1,size=4M
 machine: q35
 memory: 4096
@@ -267,7 +267,7 @@ echo "------------------------------------------"
 
 # Create VM Base
 qm create $VMID --name "$VM_NAME" \\
-  --memory 4096 --balloon 2048 --cores 4 --sockets 1 --cpu ${identity.cpuType},hidden=1,flags=+aes \\
+  --memory 4096 --balloon 2048 --cores 4 --sockets 1 \\
   --net0 ${inputs.netModel}=${identity.mac},bridge=vmbr0,firewall=1 \\
   --bios ovmf --machine q35 --ostype win10 --agent 1 --vga std,memory=128 \\
   --scsihw ${scsiMode ? 'virtio-scsi-single' : 'virtio-scsi-pci'} \\
@@ -463,7 +463,7 @@ echo "You can now start the VM from Proxmox GUI."
                   { label: "Mac Address:", val: identity.mac, color: "text-[#55efc4] drop-shadow-[0_0_5px_rgba(85,239,196,0.2)]" },
                   { label: "Disk Serial:", val: identity.dSerial, color: "text-[#55efc4] drop-shadow-[0_0_5px_rgba(85,239,196,0.2)]" },
                   { spacer: true },
-                  { label: "CPU Spoof:", val: identity.cpuType, color: "text-[#55efc4] drop-shadow-[0_0_5px_rgba(85,239,196,0.2)]" },
+                  { label: "CPU Spoof:", val: identity.spoofedCpu.name, color: "text-[#55efc4] drop-shadow-[0_0_5px_rgba(85,239,196,0.2)]" },
                   { label: "Friendly Name:", val: `${identity.dVendor} ${identity.dModel}`, color: "text-[#55efc4] drop-shadow-[0_0_5px_rgba(85,239,196,0.2)]" },
                   { label: "Disk Brand:", val: identity.dVendor, color: "text-[#ffeaa7]" },
                   { label: "Disk Type:", val: identity.dType, color: "text-[#74b9ff]" },
