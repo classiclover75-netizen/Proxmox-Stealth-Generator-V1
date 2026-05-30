@@ -15,7 +15,7 @@ export interface PcModel {
   s: string;
   bp: string;
   t: string;
-  compatibleCpus: { base: string; name: string }[];
+  compatibleCpus: { base: string; name: string; codename: string }[];
 }
 
 export interface PcBrand {
@@ -57,5 +57,5 @@ export interface HardwareIdentity {
   dSerial: string;
   hvVendor: string;
   vmGenId: string;
-  spoofedCpu: { base: string; name: string };
+  spoofedCpu: { base: string; name: string; codename: string };
 }
