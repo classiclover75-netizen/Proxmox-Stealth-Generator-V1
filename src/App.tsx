@@ -147,7 +147,7 @@ export default function App() {
       diskGlobalArg = `-global ide-hd.model="${identity.dVendor} ${identity.dModel}"`;
     }
 
-    return `-cpu '${identity.spoofedCpu.base},flags=+aes,-hypervisor,kvm=off,hv_vendor_id=GenuineIntel,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time,model_id=${identity.spoofedCpu.name}' ` +
+    return `-cpu '${identity.spoofedCpu.base},+aes,-hypervisor,kvm=off,hv_vendor_id=GenuineIntel,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time,model_id=${identity.spoofedCpu.name}' ` +
       `-smbios type=0,vendor="${identity.biosVendor}",version="${identity.ver}",date="${identity.biosDate}" ` +
       `-smbios type=1,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",sku="${identity.sku}",family="${identity.fam}" ` +
       `-smbios type=2,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",asset="${identity.sku}" ` +
