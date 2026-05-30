@@ -147,7 +147,7 @@ export default function App() {
       diskGlobalArg = `-global ide-hd.model="${identity.dVendor} ${identity.dModel}"`;
     }
 
-    return `-cpu '${identity.spoofedCpu.base},hidden=1,flags=+aes,-hypervisor,kvm=off,hv_vendor_id=GenuineIntel,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time,model_id=${identity.spoofedCpu.name}' ` +
+    return `-cpu '${identity.spoofedCpu.base},flags=+aes,-hypervisor,kvm=off,hv_vendor_id=GenuineIntel,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time,model_id=${identity.spoofedCpu.name}' ` +
       `-smbios type=0,vendor="${identity.biosVendor}",version="${identity.ver}",date="${identity.biosDate}" ` +
       `-smbios type=1,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",sku="${identity.sku}",family="${identity.fam}" ` +
       `-smbios type=2,manufacturer="${identity.manuf}",product="${identity.prod}",version="${identity.ver}",serial="${identity.serial}",asset="${identity.sku}" ` +
@@ -183,7 +183,7 @@ balloon: 2048
 bios: ovmf
 boot: order=${inputs.bootOrder}
 cores: 4
-cpu: ${identity.spoofedCpu.base},hidden=1,flags=+aes
+cpu: ${identity.spoofedCpu.base},flags=+aes
 efidisk0: local-lvm:vm-${inputs.vmId}-disk-1,efitype=4m,pre-enrolled-keys=1,size=4M
 machine: q35
 memory: 4096
@@ -268,7 +268,7 @@ echo "------------------------------------------"
 
 # Create VM Base
 qm create $VMID --name "$VM_NAME" \\
-  --memory 4096 --balloon 2048 --cores 4 --sockets 1 --cpu "${identity.spoofedCpu.base},hidden=1,flags=+aes" \\
+  --memory 4096 --balloon 2048 --cores 4 --sockets 1 --cpu "${identity.spoofedCpu.base},flags=+aes" \\
   --net0 ${inputs.netModel}=${identity.mac},bridge=vmbr0,firewall=1 \\
   --bios ovmf --machine q35 --ostype win10 --agent 1 --vga std,memory=128 \\
   --scsihw ${scsiMode ? 'virtio-scsi-single' : 'virtio-scsi-pci'} \\
@@ -289,7 +289,7 @@ qm set $VMID --boot "order=${inputs.bootOrder}"
 cat <<'EOF' >> /etc/pve/qemu-server/$VMID.conf
 args: ${args}
 vmgenid: ${identity.vmGenId}
-meta: creation-qemu=9.2.0,ctime=$(Math.floor(Date.now() / 1000))
+meta: creation-qemu=9.2.0,ctime=${Math.floor(Date.now() / 1000)}
 EOF
 
 echo ""
